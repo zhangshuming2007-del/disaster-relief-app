@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KitaBantu Prototype - Option 2</title>
+    <style>
+        /* 基础与手机框架样式 */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e9ecef; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #mobile-app { width: 375px; height: 812px; background-color: #f8f9fa; border: 12px solid #212529; border-radius: 40px; overflow: hidden; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .screen { display: none; width: 100%; height: 100%; box-sizing: border-box; overflow-y: auto; background: #fff; padding: 20px; }
+        .screen.active { display: block; }
+        
+        /* 全局组件样式 */
+        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .lang-toggle { font-weight: bold; color: #495057; background: #e9ecef; padding: 5px 10px; border-radius: 15px; font-size: 14px; }
+        .nav-back { color: #0d6efd; cursor: pointer; font-size: 16px; font-weight: bold; }
+        
+        /* 遵循 Fitts 法则的巨型按钮 */
+        .btn-massive { width: 100%; padding: 30px 20px; margin: 15px 0; border-radius: 20px; border: none; font-size: 24px; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s; }
+        .btn-donate { background-color: #ffe3e3; color: #c92a2a; border: 3px solid #ffa8a8; }
+        .btn-help { background-color: #d3f9d8; color: #2b8a3e; border: 3px solid #8ce99a; }
+        .btn-primary { width: 100%; padding: 18px; border-radius: 12px; border: none; font-size: 18px; font-weight: bold; background-color: #2b8a3e; color: white; cursor: pointer; margin-top: 20px; }
+        .btn-disabled { background-color: #adb5bd; cursor: not-allowed; }
+        
+        /* 页面 2: 灾民求助页 (Miller's Law 2x3 Grid) */
+        .privacy-banner { background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; font-size: 12px; text-align: center; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 5px;}
+        .grid-2x3 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .supply-item { border: 2px solid #dee2e6; border-radius: 12px; padding: 15px 10px; text-align: center; }
+        .supply-icon { font-size: 30px; margin-bottom: 5px; }
+        .supply-name { font-size: 14px; font-weight: bold; margin-bottom: 10px; color: #495057; }
+        .stepper { display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .stepper button { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ccc; background: white; font-weight: bold; font-size: 16px; cursor: pointer; }
+        
+        /* 页面 3 & 4: KYC 与 格式塔原则 */
+        .kyc-box { border: 2px dashed #adb5bd; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 15px; cursor: pointer; background: #f8f9fa; transition: 0.3s; }
+        .kyc-box.done { border-color: #2b8a3e; background: #e0f2fe; color: #0c8599; border-style: solid; }
+        
+        .blurred-map { height: 180px; background: url('https://via.placeholder.com/400x200?text=Map+Background') center/cover; position: relative; border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+        .blur-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; backdrop-filter: blur(8px); background: rgba(255,255,255,0.6); display: flex; justify-content: center; align-items: center; text-align: center; padding: 20px; font-weight: bold; color: #d9480f; font-size: 14px; }
+        
+        .request-card { background: white; border: 1px solid #dee2e6; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .payment-group { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #dee2e6; }
+        .payment-group input { width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; box-sizing: border-box; margin-bottom: 10px; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+<div id="mobile-app">
+    
+    <div id="page-home" class="screen active">
+        <div class="header-bar">
+            <h2>KitaBantu</h2>
+            <div class="lang-toggle">EN | BM</div>
+        </div>
+        <div style="text-align: center; color: #868e96; margin-bottom: 30px;">Emergency Response Portal</div>
+        
+        <button class="btn-massive btn-donate" onclick="nav('page-kyc')">
+            <span style="font-size: 40px; margin-bottom: 10px;">❤️</span>
+            I WANT TO DONATE
+        </button>
+        
+        <button class="btn-massive btn-help" onclick="nav('page-victim')">
+            <span style="font-size: 40px; margin-bottom: 10px;">🙋🏽‍♂️</span>
+            I NEED HELP
+        </button>
+        
+        <div style="text-align: center; margin-top: 50px; color: #fa5252; font-weight: bold;">
+            📞 Emergency Hotline: 999
+        </div>
+    </div>
+
+    <div id="page-victim" class="screen">
+        <div class="header-bar">
+            <div class="nav-back" onclick="nav('page-home')">← Back</div>
+            <h3 style="margin:0;">Request Aid</h3>
+        </div>
+        
+        <div class="privacy-banner">
+            🔒 Your exact location is encrypted. Visible ONLY to verified teams.
+        </div>
+
+        <div class="grid-2x3">
+            <div class="supply-item"><div class="supply-icon">💧</div><div class="supply-name">Clean Water</div>
+                <div class="stepper"><button onclick="step(this, -1)">-</button><span class="val">0</span><button onclick="step(this, 1)">+</button></div>
+            </div>
+            <div class="supply-item"><div class="supply-icon">🥫</div><div class="supply-name">Instant Food</div>
+                <div class="stepper"><button onclick="step(this, -1)">-</button><span class="val">0</span><button onclick="step(this, 1)">+</button></div>
+            </div>
+            <div class="supply-item"><div class="supply-icon">💊</div><div class="supply-name">Fever Meds</div>
+                <div class="stepper"><button onclick="step(this, -1)">-</button><span class="val">0</span><button onclick="step(this, 1)">+</button></div>
+            </div>
+            <div class="supply-item"><div class="supply-icon">🍼</div><div class="supply-name">Baby Formula</div>
+                <div class="stepper"><button onclick="step(this, -1)">-</button><span class="val">0</span><button onclick="step(this, 1)">+</button></div>
+            </div>
+            <div class="supply-item"><div class="supply-icon">🔦</div><div class="supply-name">Flashlight</div>
+                <div class="stepper"><button onclick="step(this, -1)">-</button><span class="val">0</span><button onclick="step(this, 1)">+</button></div>
+            </div>
+            <div class="supply-item"><div class="supply-icon">🛏️</div><div class="supply-name">Blanket</div>
+                <div class="stepper"><button onclick="step(this, -1)">-</button><span class="val">0</span><button onclick="step(this, 1)">+</button></div>
+            </div>
+        </div>
+
+        <button class="btn-primary" onclick="nav('page-success')">SUBMIT AID REQUEST</button>
+    </div>
+
+    <div id="page-success" class="screen" style="background: #2b8a3e; color: white; text-align: center; display: none;">
+        <div style="font-size: 100px; margin-top: 150px;">✔️</div>
+        <h2>Request Sent Successfully!</h2>
+        <p>Verified rescue teams have received your encrypted location. Help is on the way.</p>
+        <button class="btn-primary" style="background: white; color: #2b8a3e; margin-top: 50px;" onclick="nav('page-home')">Return Home</button>
+    </div>
+
+    <div id="page-kyc" class="screen">
+        <div class="header-bar">
+            <div class="nav-back" onclick="nav('page-home')">← Back</div>
+            <h3 style="margin:0;">Identity Check</h3>
+        </div>
+        
+        <p style="font-size: 14px; color: #495057; text-align: center; margin-bottom: 30px;">
+            To protect victim privacy and prevent fraud, a quick verification is required.
+        </p>
+
+        <div id="kyc1" class="kyc-box" onclick="completeKyc('kyc1')">
+            <span style="font-size: 24px; display: block; margin-bottom: 5px;">📸</span>
+            Step 1: Tap to Scan MyKad
+        </div>
+        
+        <div id="kyc2" class="kyc-box" onclick="completeKyc('kyc2')">
+            <span style="font-size: 24px; display: block; margin-bottom: 5px;">👤</span>
+            Step 2: Biometric Facial Scan
+        </div>
+
+        <button id="btn-kyc-submit" class="btn-primary btn-disabled" disabled onclick="nav('page-dashboard')">VERIFY AND PROCEED</button>
+    </div>
+
+    <div id="page-dashboard" class="screen">
+        <div class="header-bar">
+            <div class="nav-back" onclick="nav('page-home')">← Home</div>
+            <span style="background: #ffd43b; font-size: 12px; padding: 5px 10px; border-radius: 10px; font-weight: bold;">🏅 Badge: Verified Gold</span>
+        </div>
+
+        <div class="blurred-map">
+            <div class="blur-overlay">
+                ⚠️ Locations blurred within 2 km radius for privacy.
+            </div>
+        </div>
+
+        <div class="request-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h4 style="margin: 0;">Family Request #084</h4>
+                <span style="color: #868e96; font-size: 12px;">📍 12km away</span>
+            </div>
+            <p style="font-size: 14px; color: #495057;"><strong>Needs:</strong> Clean Water x2, Baby Formula x1</p>
+            
+            <div class="payment-group">
+                <input type="number" placeholder="Enter Amount (e.g. RM 200)">
+                <button class="btn-primary" style="margin-top: 0;" onclick="nav('page-receipt')">DIRECT PAY TO VICTIM</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-receipt" class="screen" style="background: rgba(0,0,0,0.8); color: white; text-align: center; display: none;">
+        <div style="background: white; color: #212529; padding: 30px; border-radius: 20px; margin-top: 150px; position: relative;">
+            <div style="font-size: 50px; color: #2b8a3e;">🧾</div>
+            <h3>Transaction Locked</h3>
+            <p style="font-size: 14px; color: #868e96;">Funds securely transferred to Family #084.</p>
+            <hr style="border: 0; border-top: 1px dashed #dee2e6; margin: 20px 0;">
+            <p style="font-size: 24px; font-weight: bold;">RM 200.00</p>
+            <button class="btn-primary" onclick="nav('page-dashboard')">Close Receipt</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // 页面跳转逻辑
+    function nav(pageId) {
+        document.querySelectorAll('.screen').forEach(s => {
+            s.classList.remove('active');
+            s.style.display = 'none'; 
+        });
+        const target = document.getElementById(pageId);
+        target.style.display = 'block';
+        setTimeout(() => target.classList.add('active'), 10);
+    }
+
+    // 物资数量加减器逻辑
+    function step(btn, change) {
+        let span = btn.parentElement.querySelector('.val');
+        let val = parseInt(span.innerText) + change;
+        if(val >= 0 && val <= 10) span.innerText = val;
+    }
+
+    // KYC 验证模拟逻辑
+    let kycStatus = { kyc1: false, kyc2: false };
+    function completeKyc(id) {
+        kycStatus[id] = true;
+        let box = document.getElementById(id);
+        box.classList.add('done');
+        box.innerHTML = `✔️ Step Completed`;
+        
+        // 当两步都完成时，激活底部按钮
+        if(kycStatus.kyc1 && kycStatus.kyc2) {
+            let btn = document.getElementById('btn-kyc-submit');
+            btn.classList.remove('btn-disabled');
+            btn.disabled = false;
+        }
+    }
+</script>
+
+</body>
+</html>
